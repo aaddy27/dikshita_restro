@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'security_pin' => '9999',
-                'phone' => '9876543210',
+                'phone' => '8094426174',
             ]
         );
 
@@ -89,10 +89,10 @@ class DatabaseSeeder extends Seeder
 
         // Screenshot Special Items
         $mPizza1 = MenuItem::updateOrCreate(
-            ['name' => 'Tandoori Tikka & Smoked Peppers', 'category_id' => $catPizza->id],
+            ['name' => 'Paneer Tikka & Smoked Peppers Pizza', 'category_id' => $catPizza->id],
             [
-                'description' => 'Char-grilled succulent tandoori tikka chunks paired with smoked bell peppers, red paprika, and artisanal mozzarella on hand-tossed crust.',
-                'type' => 'non_veg',
+                'description' => 'Char-grilled succulent cottage cheese cubes paired with smoked bell peppers, red paprika, and artisanal mozzarella on hand-tossed crust.',
+                'type' => 'veg',
                 'base_price' => 545.00,
                 'gst_percentage' => 5.00,
                 'is_discount_excluded' => false,
@@ -142,12 +142,12 @@ class DatabaseSeeder extends Seeder
         ItemVariant::updateOrCreate(['menu_item_id' => $m1->id, 'name' => 'Half (4 Pcs)'], ['price' => 160.00]);
         ItemVariant::updateOrCreate(['menu_item_id' => $m1->id, 'name' => 'Full (8 Pcs)'], ['price' => 280.00]);
 
-        // Item 2: Chicken Tikka (Variants: Half, Full)
+        // Item 2: Tandoori Soya Chaap Angara (Variants: Half, Full)
         $m2 = MenuItem::updateOrCreate(
-            ['name' => 'Murgh Tikka Angara', 'category_id' => $catStarters->id],
+            ['name' => 'Tandoori Soya Chaap Angara', 'category_id' => $catStarters->id],
             [
-                'description' => 'Succulent boneless chicken chunks infused with fiery Kashmiri red chilli.',
-                'type' => 'non_veg',
+                'description' => 'Succulent tandoori soya chaap chunks marinated in rich tandoori spices and charred in clay oven.',
+                'type' => 'veg',
                 'base_price' => 240.00,
                 'gst_percentage' => 5.00,
                 'is_discount_excluded' => false,
@@ -183,12 +183,12 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Item 5: Butter Chicken
+        // Item 5: Shahi Paneer Butter Masala
         $m5 = MenuItem::updateOrCreate(
-            ['name' => 'Delhi Butter Chicken', 'category_id' => $catMain->id],
+            ['name' => 'Shahi Paneer Butter Masala', 'category_id' => $catMain->id],
             [
-                'description' => 'Charcoal roasted chicken folded into rich velvety tomato cashew gravy.',
-                'type' => 'non_veg',
+                'description' => 'Fresh tender cottage cheese cubes folded into rich velvety tomato cashew gravy and churned white butter.',
+                'type' => 'veg',
                 'base_price' => 320.00,
                 'gst_percentage' => 5.00,
                 'is_discount_excluded' => false,
@@ -211,21 +211,20 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Item 7: Hyderabadi Dum Biryani
+        // Item 7: Shahi Veg Dum Biryani
         $m7 = MenuItem::updateOrCreate(
-            ['name' => 'Dum Biryani with Salan', 'category_id' => $catBreads->id],
+            ['name' => 'Shahi Veg Dum Biryani with Salan', 'category_id' => $catBreads->id],
             [
-                'description' => 'Aromatic basmati rice cooked on slow flame with saffron and whole spices.',
-                'type' => 'non_veg',
-                'base_price' => 340.00,
+                'description' => 'Aromatic long-grain basmati rice cooked on slow flame with seasonal vegetables, fresh paneer, saffron and whole spices.',
+                'type' => 'veg',
+                'base_price' => 280.00,
                 'gst_percentage' => 5.00,
                 'is_discount_excluded' => false,
                 'is_available' => true,
             ]
         );
-        ItemVariant::updateOrCreate(['menu_item_id' => $m7->id, 'name' => 'Veg'], ['price' => 240.00]);
-        ItemVariant::updateOrCreate(['menu_item_id' => $m7->id, 'name' => 'Chicken'], ['price' => 340.00]);
-        ItemVariant::updateOrCreate(['menu_item_id' => $m7->id, 'name' => 'Mutton'], ['price' => 450.00]);
+        ItemVariant::updateOrCreate(['menu_item_id' => $m7->id, 'name' => 'Half Handi'], ['price' => 180.00]);
+        ItemVariant::updateOrCreate(['menu_item_id' => $m7->id, 'name' => 'Full Handi'], ['price' => 280.00]);
 
         // Item 8: Mineral Water (Excluded from discounts)
         $m8 = MenuItem::updateOrCreate(
@@ -386,12 +385,12 @@ class DatabaseSeeder extends Seeder
         OrderItem::create([
             'order_id' => $order2->id,
             'menu_item_id' => $m7->id,
-            'item_variant_id' => $m7->variants->where('name', 'Chicken')->first()->id,
+            'item_variant_id' => $m7->variants->last()->id,
             'item_name' => $m7->name,
-            'variant_name' => 'Chicken',
+            'variant_name' => $m7->variants->last()->name,
             'qty' => 2,
-            'unit_price' => 340.00,
-            'total_price' => 680.00,
+            'unit_price' => 280.00,
+            'total_price' => 560.00,
             'kot_status' => 'printed',
             'added_by_type' => 'customer',
         ]);
@@ -447,8 +446,8 @@ class DatabaseSeeder extends Seeder
                 'customer_name' => 'Vikram Malhotra',
                 'customer_phone' => '9876543212',
                 'rating' => 5,
-                'comment' => 'Top tier dining experience in the tech zone. Loved the charcoal aroma from the live tandoor and the artisanal Dum Biryani. 10/10!',
-                'favorite_dish' => 'Hyderabadi Dum Biryani',
+                'comment' => 'Top tier 100% pure veg dining experience in Bikaner! Loved the charcoal aroma from the live tandoor and the artisanal Shahi Veg Dum Biryani. 10/10!',
+                'favorite_dish' => 'Shahi Veg Dum Biryani',
                 'is_approved' => true,
             ],
             [

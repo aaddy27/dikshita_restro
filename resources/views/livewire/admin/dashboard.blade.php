@@ -1,5 +1,16 @@
 <div class="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
 
+    @if(session()->has('message'))
+        <div class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-bold flex items-center justify-between">
+            <span>{{ session('message') }}</span>
+        </div>
+    @endif
+    @if(session()->has('error'))
+        <div class="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs font-bold flex items-center justify-between">
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Header & Date Context -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -128,6 +139,7 @@
                         <th class="py-3 px-3 text-right">Tax (5%)</th>
                         <th class="py-3 px-4 text-right">Final Amount</th>
                         <th class="py-3 px-3 text-center">Receipt</th>
+                        <th class="py-3 px-3 text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -161,10 +173,23 @@
                                     Print 80mm
                                 </a>
                             </td>
+                            <td class="py-3 px-3 text-center">
+                                @if(in_array($ro->status, ['open', 'locked']))
+                                    <button
+                                        wire:click="cancelOrder({{ $ro->id }})"
+                                        wire:confirm="Are you sure you want to cancel Order {{ $ro->order_number }}? This table will become vacant."
+                                        class="px-2.5 py-1 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-700 font-bold text-[11px] rounded-lg border border-rose-300 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                @else
+                                    <span class="text-slate-400 text-[11px]">&mdash;</span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="py-8 text-center text-slate-400">No orders recorded yet.</td>
+                            <td colspan="9" class="py-8 text-center text-slate-400">No orders recorded yet.</td>
                         </tr>
                     @endforelse
                 </tbody>

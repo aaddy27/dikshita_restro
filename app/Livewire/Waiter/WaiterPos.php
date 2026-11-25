@@ -50,7 +50,62 @@ class WaiterPos extends Component
             'current_order_id' => $order->id,
         ]);
 
+        AuditLog::record(
+            $order->id,
+            'order_created',
+            null,
+            ['status' => 'open'],
+            "Waiter (" . (Auth::user()->name ?? 'Staff') . ") started order {$order->order_number} for Table {$table->table_number}",
+            Auth::id()
+        );
+
         $this->selectedTableId = $table->id;
+    }
+
+    public function cancelOrder(string $reason = 'Cancelled by Waiter')
+    {
+        if (!$this->selectedTableId) {
+            return;
+        }
+
+        $table = RestaurantTable::find($this->selectedTableId);
+        if (!$table) {
+            return;
+        }
+
+        $order = Order::where('table_id', $table->id)
+            ->whereIn('status', ['open', 'locked'])
+            ->latest()
+            ->first();
+
+        if (!$order || $order->status === 'paid') {
+            return;
+        }
+
+        $orderNumber = $order->order_number;
+        $order->update([
+            'status' => 'cancelled',
+            'notes' => trim(($order->notes ? $order->notes . ' | ' : '') . $reason),
+        ]);
+
+        $order->items()->update(['kot_status' => 'cancelled']);
+
+        $table->update([
+            'status' => 'vacant',
+            'current_order_id' => null,
+        ]);
+
+        AuditLog::record(
+            $order->id,
+            'order_cancelled',
+            ['status' => 'open'],
+            ['status' => 'cancelled'],
+            "Order {$orderNumber} (Table {$table->table_number}) was cancelled by Waiter (" . (Auth::user()->name ?? 'Staff') . ")",
+            Auth::id()
+        );
+
+        $this->dispatch('order-cancelled', message: "Order {$orderNumber} cancelled successfully.");
+        $this->selectedTableId = null;
     }
 
     public function addItem(int $menuItemId, ?int $variantId = null, OrderCalculationService $calcService)
@@ -99,6 +154,15 @@ class WaiterPos extends Component
                 'added_by_id' => Auth::id(),
             ]);
         }
+
+        AuditLog::record(
+            $order->id,
+            'item_added',
+            null,
+            ['item' => $menuItem->name, 'variant' => $variantName],
+            "Waiter (" . (Auth::user()->name ?? 'Staff') . ") added {$menuItem->name} to Table {$table->table_number}",
+            Auth::id()
+        );
 
         $calcService->syncOrderTotals($order);
     }

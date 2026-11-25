@@ -10,7 +10,7 @@ use Livewire\Component;
 
 class KitchenDisplay extends Component
 {
-    public string $filter = 'active'; // 'active', 'veg', 'non_veg', 'all'
+    public string $filter = 'active'; // 'active', 'all'
     public ?string $tableFilter = null;
     public string $lastRefreshedAt = '';
 
@@ -71,20 +71,15 @@ class KitchenDisplay extends Component
 
         $allOrders = $ordersQuery->get();
 
-        // Calculate Kitchen KPI stats
+        // Calculate Kitchen KPI stats (100% Pure Veg)
         $totalItemsToCook = 0;
         $vegItemsToCook = 0;
-        $nonVegItemsToCook = 0;
 
         foreach ($allOrders as $ord) {
             foreach ($ord->items as $it) {
                 if (in_array($it->kot_status, ['pending', 'printed', 'cooking'])) {
                     $totalItemsToCook += $it->qty;
-                    if ($it->menuItem && $it->menuItem->isVeg()) {
-                        $vegItemsToCook += $it->qty;
-                    } else {
-                        $nonVegItemsToCook += $it->qty;
-                    }
+                    $vegItemsToCook += $it->qty;
                 }
             }
         }
@@ -94,18 +89,6 @@ class KitchenDisplay extends Component
             if ($this->filter === 'active') {
                 return $order->items->contains(function ($item) {
                     return in_array($item->kot_status, ['pending', 'printed', 'cooking']);
-                });
-            }
-
-            if ($this->filter === 'veg') {
-                return $order->items->contains(function ($item) {
-                    return $item->menuItem && $item->menuItem->isVeg() && in_array($item->kot_status, ['pending', 'printed', 'cooking']);
-                });
-            }
-
-            if ($this->filter === 'non_veg') {
-                return $order->items->contains(function ($item) {
-                    return $item->menuItem && !$item->menuItem->isVeg() && in_array($item->kot_status, ['pending', 'printed', 'cooking']);
                 });
             }
 
@@ -119,7 +102,6 @@ class KitchenDisplay extends Component
             'tables' => $tables,
             'totalItemsToCook' => $totalItemsToCook,
             'vegItemsToCook' => $vegItemsToCook,
-            'nonVegItemsToCook' => $nonVegItemsToCook,
         ])->layout('layouts.app', ['title' => "Kitchen Display (Cook Portal) - Deekshita's Restaurant"]);
     }
 }

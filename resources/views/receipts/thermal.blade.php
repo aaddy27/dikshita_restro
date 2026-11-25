@@ -81,8 +81,9 @@
                 <img src="{{ asset('images/logo-icon.jpg') }}" alt="Logo" class="w-12 h-12 object-contain rounded-lg border border-slate-300">
             </div>
             <h1 class="text-base font-black tracking-tight uppercase">DEEKSHITA'S FAMILY RESTAURANT</h1>
-            <p class="text-[11px] text-slate-600 leading-tight">Main Street, Tech Zone, Bengaluru</p>
-            <p class="text-[11px] text-slate-600">Ph: +91 98765 43210</p>
+            <p class="text-[11px] text-slate-600 leading-tight">Murlidhar Vyas Colony,
+Near Chura Gali, Bikaner 334001</p>
+            <p class="text-[11px] text-slate-600">Ph:+91 80944 26174</p>
             <p class="text-[10px] text-slate-500 mt-1">GSTIN: 29AABCU9603R1ZM | FSSAI: 11223344556677</p>
         </div>
 

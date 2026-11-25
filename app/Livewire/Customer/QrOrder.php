@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Customer;
 
+use App\Models\AuditLog;
 use App\Models\Category;
 use App\Models\MenuItem;
 use App\Models\Order;
@@ -23,7 +24,7 @@ class QrOrder extends Component
     // Filters
     public string $search = '';
     public ?int $selectedCategory = null;
-    public string $typeFilter = 'all'; // all, veg, non_veg
+    public string $typeFilter = 'all'; // 100% Pure Veg restaurant
 
     // Cart: array of items: [key => ['menu_item_id', 'item_variant_id', 'name', 'variant_name', 'price', 'qty', 'is_discount_excluded']]
     public array $cart = [];
@@ -259,6 +260,15 @@ class QrOrder extends Component
 
         // Recalculate totals
         $calcService->syncOrderTotals($order);
+
+        AuditLog::record(
+            $order->id,
+            'order_created',
+            null,
+            ['items' => count($this->cart), 'subtotal' => $order->subtotal],
+            "Customer placed QR order on Table {$table->table_number} ({$order->order_number})",
+            null
+        );
 
         // Reset cart
         $this->cart = [];

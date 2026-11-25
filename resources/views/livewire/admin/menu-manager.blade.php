@@ -177,11 +177,11 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Dietary Type</label>
-                            <select wire:model="type" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none">
-                                <option value="veg">Vegetarian (Veg)</option>
-                                <option value="non_veg">Non-Vegetarian</option>
-                            </select>
+                            <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Dietary Standard</label>
+                            <div class="px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 font-bold text-xs">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                                <span>100% Pure Vegetarian (Veg)</span>
+                            </div>
                         </div>
                     </div>
 

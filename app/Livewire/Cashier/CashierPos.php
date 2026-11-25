@@ -58,6 +58,15 @@ class CashierPos extends Component
 
     public function mount()
     {
+        // Auto-heal table active status synchronization
+        $activeOrders = Order::whereIn('status', ['open', 'locked'])->get();
+        foreach ($activeOrders as $ord) {
+            RestaurantTable::where('id', $ord->table_id)->update([
+                'status' => $ord->status === 'locked' ? 'locked' : 'occupied',
+                'current_order_id' => $ord->id,
+            ]);
+        }
+
         // Default to first occupied or first table
         $table = RestaurantTable::whereIn('status', ['occupied', 'locked'])->first()
             ?: RestaurantTable::first();
@@ -72,9 +81,33 @@ class CashierPos extends Component
         $this->selectedTableId = $tableId;
         $table = RestaurantTable::find($tableId);
 
-        if ($table && $table->current_order_id) {
-            $order = Order::with(['items.menuItem', 'items.variant'])->find($table->current_order_id);
+        if ($table) {
+            // Find active running order via current_order_id OR open/locked orders
+            $order = null;
+            if ($table->current_order_id) {
+                $order = Order::with(['items.menuItem', 'items.variant'])->find($table->current_order_id);
+                if ($order && !in_array($order->status, ['open', 'locked'])) {
+                    $order = null;
+                }
+            }
+
+            if (!$order) {
+                $order = Order::with(['items.menuItem', 'items.variant'])
+                    ->where('table_id', $table->id)
+                    ->whereIn('status', ['open', 'locked'])
+                    ->latest()
+                    ->first();
+            }
+
             if ($order) {
+                // Keep table status in 100% synchronization
+                if ($table->current_order_id !== $order->id || $table->status === 'vacant') {
+                    $table->update([
+                        'status' => $order->status === 'locked' ? 'locked' : 'occupied',
+                        'current_order_id' => $order->id,
+                    ]);
+                }
+
                 $this->selectedOrderId = $order->id;
                 $this->customerName = $order->customer_name ?? '';
                 $this->customerPhone = $order->customer_phone ?? '';
@@ -89,7 +122,16 @@ class CashierPos extends Component
                     $this->manualPayableOverride = '';
                 }
             } else {
+                if ($table->status !== 'vacant' || $table->current_order_id !== null) {
+                    $table->update([
+                        'status' => 'vacant',
+                        'current_order_id' => null,
+                    ]);
+                }
                 $this->selectedOrderId = null;
+                $this->discountMode = 'auto';
+                $this->discountValue = 0.0;
+                $this->manualPayableOverride = '';
             }
         } else {
             $this->selectedOrderId = null;
@@ -261,6 +303,15 @@ class CashierPos extends Component
             'current_order_id' => $order->id,
         ]);
 
+        AuditLog::record(
+            $order->id,
+            'order_created',
+            null,
+            ['status' => 'open'],
+            "Cashier (" . (Auth::user()->name ?? 'Staff') . ") opened order {$order->order_number} for Table {$table->table_number}",
+            Auth::id()
+        );
+
         $this->selectedOrderId = $order->id;
         $this->recalculate();
     }
@@ -271,7 +322,7 @@ class CashierPos extends Component
             $this->startNewOrderForTable();
         }
 
-        $order = Order::findOrFail($this->selectedOrderId);
+        $order = Order::with('table')->findOrFail($this->selectedOrderId);
         if ($order->isLocked()) {
             return;
         }
@@ -305,6 +356,15 @@ class CashierPos extends Component
                 'added_by_id' => Auth::id(),
             ]);
         }
+
+        AuditLog::record(
+            $order->id,
+            'item_added',
+            null,
+            ['item' => $menuItem->name, 'variant' => $variant ? $variant->name : null],
+            "Cashier added {$menuItem->name} to Table " . ($order->table ? $order->table->table_number : 'Order'),
+            Auth::id()
+        );
 
         $this->recalculate();
     }
@@ -356,6 +416,12 @@ class CashierPos extends Component
         ]);
 
         if ($table) {
+            // Also ensure any dangling open orders on this table are settled so no orphaned running orders remain
+            Order::where('table_id', $table->id)
+                ->whereIn('status', ['open', 'locked'])
+                ->where('id', '!=', $order->id)
+                ->update(['status' => 'cancelled']);
+
             $table->update([
                 'status' => 'vacant',
                 'current_order_id' => null,
@@ -376,6 +442,49 @@ class CashierPos extends Component
         $this->dispatch('open-receipt-window', url: $receiptUrl);
 
         // Reset POS selection
+        $this->selectedOrderId = null;
+        $this->selectTable($this->selectedTableId);
+    }
+
+    public function cancelCurrentOrder(string $reason = 'Cancelled by Cashier')
+    {
+        if (!$this->selectedOrderId) {
+            return;
+        }
+
+        $order = Order::with('table')->find($this->selectedOrderId);
+        if (!$order || $order->status === 'paid') {
+            return;
+        }
+
+        $orderNumber = $order->order_number;
+        $table = $order->table;
+        $tableName = $table ? $table->table_number : 'Table';
+
+        $order->update([
+            'status' => 'cancelled',
+            'notes' => trim(($order->notes ? $order->notes . ' | ' : '') . $reason),
+        ]);
+
+        $order->items()->update(['kot_status' => 'cancelled']);
+
+        if ($table) {
+            $table->update([
+                'status' => 'vacant',
+                'current_order_id' => null,
+            ]);
+        }
+
+        AuditLog::record(
+            $order->id,
+            'order_cancelled',
+            ['status' => 'open'],
+            ['status' => 'cancelled'],
+            "Order {$orderNumber} (Table {$tableName}) was cancelled by Cashier (" . (Auth::user()->name ?? 'Staff') . ")",
+            Auth::id()
+        );
+
+        $this->dispatch('order-cancelled', message: "Order {$orderNumber} cancelled successfully.");
         $this->selectedOrderId = null;
         $this->selectTable($this->selectedTableId);
     }

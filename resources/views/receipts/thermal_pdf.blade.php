@@ -106,8 +106,9 @@
         @endif
         <div class="restaurant-title">{{ $restaurant['name'] ?? config('app.restaurant_name', "Deekshita's Family Restaurant") }}</div>
         <div class="sub-header">
-            {{ $restaurant['address'] ?? config('app.restaurant_address', 'Main Street, Tech Zone, Bengaluru') }}<br>
-            Ph: {{ $restaurant['phone'] ?? config('app.restaurant_phone', '+91 98765 43210') }}<br>
+            {{ $restaurant['address'] ?? config('app.restaurant_address', 'Murlidhar Vyas Colony,
+Near Chura Gali, Bikaner 334001') }}<br>
+            Ph: {{ $restaurant['phone'] ?? config('app.restaurant_phone', '+91 80944 26174') }}<br>
             GSTIN: {{ $restaurant['gstin'] ?? config('app.restaurant_gstin', '29AABCU9603R1ZM') }} | FSSAI: {{ $restaurant['fssai'] ?? config('app.restaurant_fssai', '11223344556677') }}
         </div>
     </div>

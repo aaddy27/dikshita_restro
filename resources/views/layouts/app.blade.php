@@ -104,6 +104,9 @@
             </div>
 
             @auth
+                <!-- Real-time Activity & Alert Notification Bell with Audio & Voice -->
+                <livewire:notification-bell />
+
                 <!-- User Profile & Role Chip -->
                 <div class="flex items-center gap-2 pl-2">
                     <div class="flex flex-col text-right">

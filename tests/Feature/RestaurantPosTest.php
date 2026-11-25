@@ -233,8 +233,8 @@ class RestaurantPosTest extends TestCase
             ->test(\App\Livewire\Kitchen\KitchenDisplay::class)
             ->assertViewHas('orders')
             ->assertViewHas('totalItemsToCook')
-            ->call('setFilter', 'veg')
-            ->assertSet('filter', 'veg');
+            ->call('setFilter', 'all')
+            ->assertSet('filter', 'all');
     }
 
     public function test_admin_can_upload_dish_image_in_menu(): void
@@ -255,5 +255,132 @@ class RestaurantPosTest extends TestCase
         $this->assertNotNull($item->image_path);
         \Illuminate\Support\Facades\Storage::disk('public')->assertExists($item->image_path);
         $this->assertNotNull($item->image_url);
+    }
+
+    public function test_all_menu_items_are_strictly_pure_veg(): void
+    {
+        $nonVegCount = \App\Models\MenuItem::where('type', 'non_veg')->count();
+        $this->assertSame(0, $nonVegCount);
+
+        $response = $this->get(route('home'));
+        $response->assertStatus(200);
+        $response->assertSee('100% Pure Vegetarian');
+        $response->assertDontSee('Non-Veg (');
+    }
+
+    public function test_customer_review_qr_and_submission(): void
+    {
+        // Standee print page returns 200 with review QR
+        $response = $this->get(route('print.review.qr'));
+        $response->assertStatus(200);
+        $response->assertSee('DEEKSHITA');
+        $response->assertSee('Rate &amp; Review Us', false);
+
+        // Submit review
+        $reviewResponse = $this->post(route('reviews.store'), [
+            'customer_name' => 'Kavita Agarwal',
+            'customer_phone' => '9876543210',
+            'rating' => 5,
+            'favorite_dish' => 'Shahi Paneer Butter Masala',
+            'comment' => 'खाना बहुत ही स्वादिष्ट और 100% शुद्ध शाकाहारी था! दाल मखनी और पनीर टिक्का का स्वाद वाकई लाजवाब है।',
+        ]);
+        $reviewResponse->assertRedirect();
+
+        $this->assertDatabaseHas('reviews', [
+            'customer_name' => 'Kavita Agarwal',
+            'rating' => 5,
+            'favorite_dish' => 'Shahi Paneer Butter Masala',
+        ]);
+    }
+
+    public function test_cashier_can_cancel_order_and_vacant_table(): void
+    {
+        $cashier = User::where('role', 'cashier')->first();
+        $this->assertNotNull($cashier);
+
+        $table = RestaurantTable::where('table_number', 'T-04')->first();
+        $order = Order::create([
+            'order_number' => 'ORD-CSH-' . strtoupper(uniqid()),
+            'table_id' => $table->id,
+            'status' => 'open',
+        ]);
+        $table->update(['status' => 'occupied', 'current_order_id' => $order->id]);
+
+        \Livewire\Livewire::actingAs($cashier)
+            ->test(\App\Livewire\Cashier\CashierPos::class)
+            ->call('selectTable', $table->id)
+            ->call('cancelCurrentOrder', 'Customer left')
+            ->assertDispatched('order-cancelled');
+
+        $this->assertSame('cancelled', $order->fresh()->status);
+        $this->assertSame('vacant', $table->fresh()->status);
+        $this->assertNull($table->fresh()->current_order_id);
+    }
+
+    public function test_waiter_can_cancel_order_and_vacant_table(): void
+    {
+        $waiter = User::where('role', 'waiter')->first();
+        $this->assertNotNull($waiter);
+
+        $table = RestaurantTable::where('table_number', 'T-02')->first();
+        $order = Order::where('table_id', $table->id)->whereIn('status', ['open', 'locked'])->first();
+        if (!$order) {
+            $order = Order::create([
+                'order_number' => 'ORD-WTR-' . strtoupper(uniqid()),
+                'table_id' => $table->id,
+                'status' => 'open',
+            ]);
+            $table->update(['status' => 'occupied', 'current_order_id' => $order->id]);
+        }
+
+        \Livewire\Livewire::actingAs($waiter)
+            ->test(\App\Livewire\Waiter\WaiterPos::class)
+            ->call('selectTable', $table->id)
+            ->call('cancelOrder', 'Cancelled by waiter test')
+            ->assertDispatched('order-cancelled');
+
+        $this->assertSame('cancelled', $order->fresh()->status);
+        $this->assertSame('vacant', $table->fresh()->status);
+    }
+
+    public function test_admin_can_cancel_order_from_dashboard(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $this->assertNotNull($admin);
+
+        $table = RestaurantTable::where('table_number', 'T-03')->first();
+        $order = Order::create([
+            'order_number' => 'ORD-ADM-' . strtoupper(uniqid()),
+            'table_id' => $table->id,
+            'status' => 'open',
+        ]);
+        $table->update(['status' => 'occupied', 'current_order_id' => $order->id]);
+
+        \Livewire\Livewire::actingAs($admin)
+            ->test(\App\Livewire\Admin\Dashboard::class)
+            ->call('cancelOrder', $order->id);
+
+        $this->assertSame('cancelled', $order->fresh()->status);
+        $this->assertSame('vacant', $table->fresh()->status);
+    }
+
+    public function test_notification_bell_dispatches_activity_events(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+
+        $component = \Livewire\Livewire::actingAs($admin)
+            ->test(\App\Livewire\NotificationBell::class);
+
+        // Record a new activity log
+        \App\Models\AuditLog::record(
+            null,
+            'order_created',
+            null,
+            null,
+            'Testing real-time sound notification chime and voice'
+        );
+
+        $component->call('checkActivities')
+            ->assertDispatched('play-activity-sound');
     }
 }

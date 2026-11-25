@@ -28,12 +28,21 @@ Route::get('/', function () {
     $heroVideo = \App\Models\SiteSetting::get('hero_video_path');
     $sliderImages = \App\Models\SiteSetting::get('slider_images', []);
     $reviews = \App\Models\Review::approved()->latest()->take(12)->get();
+    $reviewUrl = url('/?review=1#reviews');
+    $reviewQrSvg = base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::size(170)->margin(1)->generate($reviewUrl));
 
-    return view('website', compact('categories', 'tables', 'activePromotion', 'heroVideo', 'sliderImages', 'reviews'));
+    return view('website', compact('categories', 'tables', 'activePromotion', 'heroVideo', 'sliderImages', 'reviews', 'reviewUrl', 'reviewQrSvg'));
 })->name('home');
 
 // Customer Review Submission
 Route::post('/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+
+// Printable Table Standee for Guest Reviews & Rating QR Code
+Route::get('/print-review-qr', function () {
+    $reviewUrl = url('/?review=1#reviews');
+    $reviewQrSvg = base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::size(280)->margin(1)->generate($reviewUrl));
+    return view('admin.print_review_qr', compact('reviewUrl', 'reviewQrSvg'));
+})->name('print.review.qr');
 
 // Staff Portal Quick Switcher
 Route::get('/portal', function () {

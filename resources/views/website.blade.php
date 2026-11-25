@@ -75,7 +75,7 @@
                 >
                 <div class="flex flex-col">
                     <span class="font-extrabold text-slate-900 text-lg leading-tight tracking-tight">Deekshita's</span>
-                    <span class="text-[11px] font-semibold text-amber-700 tracking-wider uppercase">Family Restaurant &bull; Fine Dining</span>
+                    <span class="text-[11px] font-semibold text-emerald-700 tracking-wider uppercase">100% Pure Veg &bull; Family Restaurant</span>
                 </div>
             </a>
 
@@ -238,8 +238,8 @@
 
                         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
                             <div class="text-2xl mb-1">🌿</div>
-                            <h4 class="font-bold text-slate-900 text-xs">Separate Kitchens</h4>
-                            <p class="text-[11px] text-slate-500 mt-1">Strict segregation and hygiene protocols for Veg &amp; Non-Veg preparations.</p>
+                            <h4 class="font-bold text-slate-900 text-xs">100% Pure Veg</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Shuddh Shakahari culinary delicacies prepared with pure ingredients &amp; zero compromise on hygiene.</p>
                         </div>
 
                         <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
@@ -270,7 +270,8 @@
                                 <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 text-base">📍</div>
                                 <div>
                                     <strong class="text-slate-200 block text-xs">Location:</strong>
-                                    <span class="text-slate-400">Main Street, Tech Zone, Bengaluru, KA - 560100</span>
+                                    <span class="text-slate-400">Murlidhar Vyas Colony,
+Near Chura Gali, Bikaner 334001, Bkn-334001</span>
                                 </div>
                             </div>
 
@@ -286,7 +287,7 @@
                                 <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center shrink-0 text-base">📞</div>
                                 <div>
                                     <strong class="text-slate-200 block text-xs">Reservations &amp; Enquiries:</strong>
-                                    <span class="text-slate-400">+91 98765 43210 / billing@dikshitarestro.com</span>
+                                    <span class="text-slate-400">+91 80944 26174 / billing@dikshitarestro.com</span>
                                 </div>
                             </div>
 
@@ -322,11 +323,11 @@
                     Our Culinary Menu
                 </h2>
                 <p class="mt-2 text-slate-500 text-xs sm:text-sm">
-                    Freshly made upon order. Browse by category, check Half &amp; Full portions, or filter by Veg/Non-Veg.
+                    Freshly made upon order. 100% Shuddh Shakahari culinary delicacies prepared with authentic spices and pure ingredients.
                 </p>
             </div>
 
-            <!-- Category Tabs (Direct Categories Only - "All Categories" removed as requested) -->
+            <!-- Category Tabs & 100% Pure Veg Badge -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 bg-white p-3 rounded-2xl border border-slate-200/90 shadow-xs">
                 <!-- Actual Category Tabs -->
                 <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none">
@@ -341,31 +342,10 @@
                     @endforeach
                 </div>
 
-                <!-- Veg / Non-Veg Segmented Toggle -->
-                <div class="inline-flex p-1 bg-slate-100 rounded-xl text-xs font-semibold self-end sm:self-auto">
-                    <button
-                        @click="typeFilter = 'all'"
-                        :class="typeFilter === 'all' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600'"
-                        class="px-3 py-1 rounded-lg transition-all cursor-pointer"
-                    >
-                        All
-                    </button>
-                    <button
-                        @click="typeFilter = 'veg'"
-                        :class="typeFilter === 'veg' ? 'bg-white text-emerald-700 shadow-xs font-bold' : 'text-slate-600'"
-                        class="px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
-                    >
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Veg Only
-                    </button>
-                    <button
-                        @click="typeFilter = 'non_veg'"
-                        :class="typeFilter === 'non_veg' ? 'bg-white text-rose-700 shadow-xs font-bold' : 'text-slate-600'"
-                        class="px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
-                    >
-                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                        Non-Veg
-                    </button>
+                <!-- 100% Pure Veg Hallmark -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-2 bg-emerald-50 text-emerald-800 border border-emerald-200/90 rounded-xl text-xs font-black shadow-2xs self-end sm:self-auto">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                    <span>🌿 100% Pure Vegetarian</span>
                 </div>
             </div>
 
@@ -519,17 +499,11 @@
                                 >
                                     <!-- Left Details -->
                                     <div class="flex-1 pr-2">
-                                        <!-- Veg / Non-Veg Icon -->
+                                        <!-- Pure Veg Icon -->
                                         <div class="mb-1.5 flex items-center gap-2">
-                                            @if($item->isVeg())
-                                                <span class="inline-flex items-center justify-center w-4 h-4 border border-emerald-600 rounded-[3px] p-[2.5px]">
-                                                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center justify-center w-4 h-4 border border-rose-600 rounded-[3px] p-[2.5px]">
-                                                    <span class="w-2 h-2 rounded-full bg-rose-600"></span>
-                                                </span>
-                                            @endif
+                                            <span class="inline-flex items-center justify-center w-4 h-4 border border-emerald-600 rounded-[3px] p-[2.5px]" title="100% Pure Veg">
+                                                <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                                            </span>
 
                                             @if(!$item->is_discount_excluded && $activePromotion)
                                                 <span class="text-[9px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded">
@@ -665,6 +639,59 @@
                 </button>
             </div>
 
+            <!-- REVIEW & RATING QR CODE STANDEE BANNER -->
+            <div class="mb-10 bg-gradient-to-br from-amber-50 via-white to-amber-50/50 rounded-3xl p-6 sm:p-8 border-2 border-amber-300 shadow-md flex flex-col lg:flex-row items-center justify-between gap-8">
+                <!-- Left: Info & Call to Action -->
+                <div class="flex-1 space-y-4 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-xs font-black">
+                        <span>📱 Scan &bull; Rate &bull; Review</span>
+                    </div>
+
+                    <h3 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                        Scan QR Code to Rate Your Dining Experience
+                    </h3>
+
+                    <p class="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
+                        Loved our authentic 100% pure veg delicacies and hospitality? Scan this QR code from your phone's camera to instantly open the review form. Click <strong>"Generate Review"</strong> to post a high-quality review in Hindi or English in just 1 second!
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                        <button
+                            @click="showReviewModal = true; openReviewModal()"
+                            onclick="openReviewModal()"
+                            class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
+                        >
+                            <span class="text-base leading-none">✨</span>
+                            <span>Write / Generate Review (1-Click)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Standee QR Box -->
+                <div class="bg-white rounded-3xl p-5 shadow-lg border-2 border-amber-400 text-center flex flex-col items-center shrink-0 w-64 group hover:scale-[1.02] transition-transform">
+                    <div class="flex items-center justify-center gap-1.5 mb-2">
+                        <img src="{{ asset('images/logo-icon.jpg') }}" alt="Logo" class="w-6 h-6 rounded-md object-cover border border-amber-400/40">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-900">Deekshita's Rating QR</span>
+                    </div>
+
+                    <!-- Glowing Star Rating -->
+                    <div class="flex items-center justify-center gap-1 text-amber-400 text-sm mb-2">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                        <span class="text-[11px] font-black text-slate-700 ml-1">5.0</span>
+                    </div>
+
+                    <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-2xl shadow-inner">
+                        <img src="data:image/svg+xml;base64,{{ $reviewQrSvg }}" alt="Scan QR to Rate Deekshita's Restaurant" class="w-40 h-40 object-contain">
+                    </div>
+
+                    <span class="mt-3 text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 flex items-center justify-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Point Mobile Camera
+                    </span>
+                    <span class="text-[9px] text-slate-400 mt-0.5">Instant Mobile Review</span>
+                </div>
+            </div>
+
             <!-- Reviews Grid Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 @forelse($reviews as $rev)
@@ -724,8 +751,9 @@
                     </div>
                     <h4 class="text-base font-extrabold text-slate-900">Visit Our Restaurant</h4>
                     <p class="text-xs text-slate-500 leading-relaxed">
-                        Main Street, Tech Zone, Bengaluru, Karnataka - 560100<br>
-                        Valet Parking &amp; Wheelchair accessible.
+                        Murlidhar Vyas Colony,
+Near Chura Gali, Bikaner 334001, <br>
+                      
                     </p>
                 </div>
 
@@ -738,7 +766,7 @@
                     <p class="text-xs text-slate-500 leading-relaxed">
                         Monday &ndash; Sunday: 11:00 AM &ndash; 11:30 PM<br>
                         Lunch Buffet: 12:30 PM &ndash; 3:30 PM<br>
-                        Dinner: 7:00 PM &ndash; 11:30 PM
+                        Dinner: 7:00 PM &ndash; 10:30 PM
                     </p>
                 </div>
 
@@ -749,7 +777,7 @@
                     </div>
                     <h4 class="text-base font-extrabold text-slate-900">Get in Touch</h4>
                     <p class="text-xs text-slate-500 leading-relaxed">
-                        Phone: +91 98765 43210<br>
+                        Phone:+91 80944 26174<br>
                         Email: billing@dikshitarestro.com<br>
                         WhatsApp Invoicing enabled.
                     </p>
@@ -830,14 +858,81 @@
         x-show="showReviewModal"
         x-cloak
         style="display: none;"
-        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm overflow-y-auto"
         @click.self="showReviewModal = false; closeReviewModal()"
         x-data="{
             rating: 5,
-            hoverRating: 0
+            hoverRating: 0,
+            comment: '',
+            favoriteDish: '',
+            generatedNotice: '',
+            hindiTemplates: [
+                {
+                    comment: 'खाना बहुत ही स्वादिष्ट और 100% शुद्ध शाकाहारी था! दाल मखनी और पनीर टिक्का का स्वाद वाकई लाजवाब है। सर्विस बहुत तेज़ थी और स्टाफ का व्यवहार बहुत विनम्र रहा। फैमिली के साथ आने के लिए बेस्ट रेस्टोरेंट!',
+                    dish: 'Bukhara Dal Makhani & Paneer Tikka'
+                },
+                {
+                    comment: 'बीकानेर में इतना बेहतरीन प्योर वेज खाना पहली बार चखा! एंबियंस बहुत शांत, साफ-सुथरा और खूबसूरत है। टेबल QR से आर्डर करना बेहद आसान रहा। 10 में से 10 नंबर!',
+                    dish: 'Shahi Paneer Butter Masala & Garlic Naan'
+                },
+                {
+                    comment: 'शानदार डाइनिंग अनुभव! गरमा-गरम खाना बिल्कुल ताज़ा परोसा गया। तंदूरी सोया चाप और वेज दम बिरयानी का स्वाद कभी नहीं भूल सकते। पूरे परिवार को बहुत पसंद आया।',
+                    dish: 'Tandoori Soya Chaap Angara & Dum Biryani'
+                },
+                {
+                    comment: 'परिवार और बच्चों के साथ डिनर के लिए एकदम उत्तम जगह। साफ-सफाई और शुद्धता का पूरा ध्यान रखा गया है। वर्ल्ड ऑफ वेजीज पिज्जा और ब्राउनी बच्चों को बहुत पसंद आई!',
+                    dish: 'World Of Veggies Pizza & Brownie'
+                },
+                {
+                    comment: 'बहुत ही उम्दा स्वाद, लाजवाब प्रेजेंटेशन और त्वरित सेवा! रेट्स भी बिल्कुल वाजिब हैं और क्वांटिटी भी बहुत अच्छी है। हाइजीन और टेस्ट दोनों में नंबर 1!',
+                    dish: 'Dal Makhani Bukhara & Tandoori Roti'
+                }
+            ],
+            englishTemplates: [
+                {
+                    comment: 'Outstanding 100% pure vegetarian dining experience! The Dal Makhani was slow-cooked to creamy perfection and the Paneer Tikka was melt-in-the-mouth soft. Highly recommended for families!',
+                    dish: 'Bukhara Dal Makhani & Paneer Tikka'
+                },
+                {
+                    comment: 'One of the finest pure veg restaurants in the city! Divine culinary flavors, elegant modern ambiance, and attentive staff. Contactless table QR ordering made the dining seamless.',
+                    dish: 'Shahi Paneer Butter Masala & Garlic Naan'
+                },
+                {
+                    comment: 'Exceptional food quality and authentic spices. The Tandoori Soya Chaap Angara and Shahi Dum Biryani were bursting with charcoal aroma. Fresh, piping hot food served with heartfelt warmth!',
+                    dish: 'Tandoori Soya Chaap & Dum Biryani'
+                },
+                {
+                    comment: 'Spotless cleanliness, cozy family atmosphere, and delicious food! Every dish exceeded our expectations. The artisanal pizza and sizzling brownie are must-tries.',
+                    dish: 'World of Veggies Pizza & Sizzling Brownie'
+                },
+                {
+                    comment: 'Truly heartfelt hospitality with genuine pure veg goodness. Clean enterprise standards, prompt service, and unbeatable taste. Will definitely visit again!',
+                    dish: 'Paneer Tikka & Crispy Corn Pepper'
+                }
+            ],
+            hindiIndex: 0,
+            englishIndex: 0,
+            generateHindi() {
+                this.rating = 5;
+                const item = this.hindiTemplates[this.hindiIndex % this.hindiTemplates.length];
+                this.hindiIndex++;
+                this.comment = item.comment;
+                this.favoriteDish = item.dish;
+                this.generatedNotice = '✓ हिंदी में Review तैयार हो गया! आप चाहें तो एडिट कर सकते हैं।';
+                setTimeout(() => { this.generatedNotice = ''; }, 4000);
+            },
+            generateEnglish() {
+                this.rating = 5;
+                const item = this.englishTemplates[this.englishIndex % this.englishTemplates.length];
+                this.englishIndex++;
+                this.comment = item.comment;
+                this.favoriteDish = item.dish;
+                this.generatedNotice = '✓ English review generated! Feel free to edit or submit directly.';
+                setTimeout(() => { this.generatedNotice = ''; }, 4000);
+            }
         }"
     >
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4 relative">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-4 relative my-auto max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div>
                     <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600">Guest Experience</span>
@@ -877,6 +972,46 @@
                     <span class="text-xs font-bold text-amber-800 mt-1 block" x-text="rating + ' Stars - ' + (rating === 5 ? 'Outstanding! Highly Recommended' : (rating === 4 ? 'Very Good Experience' : (rating === 3 ? 'Average' : 'Could Be Better')))"></span>
                 </div>
 
+                <!-- 1-Click Smart Auto-Generate Review Widget -->
+                <div class="p-3 bg-gradient-to-r from-amber-50 to-indigo-50/60 rounded-2xl border border-amber-200">
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                        <span class="text-[11px] font-black uppercase text-amber-900 flex items-center gap-1.5">
+                            <span class="text-sm">✨</span>
+                            <span>Auto-Generate Review (1-Click)</span>
+                        </span>
+                        <span class="text-[9px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200">User Friendly</span>
+                    </div>
+
+                    <p class="text-[11px] text-slate-600 mb-2 leading-tight">
+                        Bina type kiye, ek click me shandaar review generate karein:
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button
+                            type="button"
+                            @click="generateHindi()"
+                            class="py-2 px-2.5 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs rounded-xl shadow-2xs transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                            <span>🇮🇳</span>
+                            <span>हिंदी में लिखें</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            @click="generateEnglish()"
+                            class="py-2 px-2.5 bg-white hover:bg-indigo-100 text-indigo-900 border border-indigo-300 font-bold text-xs rounded-xl shadow-2xs transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                            <span>🇬🇧</span>
+                            <span>In English</span>
+                        </button>
+                    </div>
+
+                    <!-- Animated Success Notice -->
+                    <div x-show="generatedNotice" x-cloak class="mt-2 text-[10px] font-bold text-emerald-800 bg-emerald-100/90 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1.5 transition-all">
+                        <span x-text="generatedNotice"></span>
+                    </div>
+                </div>
+
                 <!-- Customer Details -->
                 <div class="space-y-3 text-xs">
                     <div>
@@ -905,15 +1040,20 @@
                         <input
                             type="text"
                             name="favorite_dish"
+                            x-model="favoriteDish"
                             placeholder="e.g. Bukhara Dal Makhani, Paneer Tikka"
                             class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:border-indigo-600"
                         >
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold uppercase text-slate-500 mb-1">Your Dining Review &amp; Comments *</label>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-[10px] font-bold uppercase text-slate-500">Your Dining Review &amp; Comments *</label>
+                            <span class="text-[10px] text-slate-400">Editable</span>
+                        </div>
                         <textarea
                             name="comment"
+                            x-model="comment"
                             rows="3"
                             required
                             placeholder="Tell us what you enjoyed most about the food, service and atmosphere..."
@@ -1057,8 +1197,16 @@
             }
         });
 
-        // Ensure Background Video Autoplay is robust on all browsers
+        // Ensure Background Video Autoplay is robust on all browsers & handle Review QR deep link
         document.addEventListener('DOMContentLoaded', function() {
+            // Auto open review modal if URL has ?review=1 or hash is #write-review
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('review') === '1' || window.location.hash === '#write-review') {
+                setTimeout(() => {
+                    openReviewModal();
+                }, 350);
+            }
+
             const vid = document.getElementById('heroBackgroundVideo');
             if (vid) {
                 vid.muted = true;

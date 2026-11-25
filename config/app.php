@@ -71,6 +71,8 @@ return [
 
     'timezone' => env('APP_TIMEZONE', 'Asia/Kolkata'),
 
+    'restaurant_phone' => env('RESTAURANT_PHONE', '+91 80944 26174'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

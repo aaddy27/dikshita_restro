@@ -28,18 +28,10 @@
                 <span class="font-bold text-[11px] uppercase tracking-wider text-slate-300">Items to Cook</span>
             </div>
 
-            <!-- Veg Items -->
+            <!-- 100% Pure Veg Badge -->
             <div class="px-3.5 py-2 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <span class="font-mono-numbers font-extrabold text-sm text-emerald-900">{{ $vegItemsToCook }}</span>
-                <span class="font-bold text-[11px]">Veg</span>
-            </div>
-
-            <!-- Non-Veg Items -->
-            <div class="px-3.5 py-2 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                <span class="font-mono-numbers font-extrabold text-sm text-rose-900">{{ $nonVegItemsToCook }}</span>
-                <span class="font-bold text-[11px]">Non-Veg</span>
+                <span class="font-extrabold text-[11px] uppercase tracking-wider">100% Pure Veg (Shuddh Shakahari) Kitchen</span>
             </div>
         </div>
     </div>
@@ -54,22 +46,6 @@
                 class="flex-1 sm:flex-none px-4 py-2 rounded-lg transition-all cursor-pointer {{ $filter === 'active' ? 'bg-white text-slate-900 font-black shadow-xs' : 'text-slate-600 hover:text-slate-900' }}"
             >
                 🔥 Active To-Cook ({{ $totalItemsToCook }})
-            </button>
-            <button
-                type="button"
-                wire:click="setFilter('veg')"
-                class="flex-1 sm:flex-none px-3.5 py-2 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 {{ $filter === 'veg' ? 'bg-white text-emerald-700 font-black shadow-xs' : 'text-slate-600 hover:text-slate-900' }}"
-            >
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>Veg ({{ $vegItemsToCook }})</span>
-            </button>
-            <button
-                type="button"
-                wire:click="setFilter('non_veg')"
-                class="flex-1 sm:flex-none px-3.5 py-2 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 {{ $filter === 'non_veg' ? 'bg-white text-rose-700 font-black shadow-xs' : 'text-slate-600 hover:text-slate-900' }}"
-            >
-                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                <span>Non-Veg ({{ $nonVegItemsToCook }})</span>
             </button>
             <button
                 type="button"
@@ -169,17 +145,11 @@
                                     </div>
 
                                     <div>
-                                        <!-- Dish Name & Veg/Non-Veg -->
+                                        <!-- Dish Name & Pure Veg Indicator -->
                                         <div class="flex items-center gap-1.5">
-                                            @if($isVeg)
-                                                <span class="w-3.5 h-3.5 border border-emerald-600 rounded-xs flex items-center justify-center p-0.5 shrink-0" title="Pure Veg">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                                </span>
-                                            @else
-                                                <span class="w-3.5 h-3.5 border border-rose-600 rounded-xs flex items-center justify-center p-0.5 shrink-0" title="Non-Veg">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
-                                                </span>
-                                            @endif
+                                            <span class="w-3.5 h-3.5 border border-emerald-600 rounded-xs flex items-center justify-center p-0.5 shrink-0" title="100% Pure Veg">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                            </span>
                                             <span class="font-black text-xs text-slate-900 {{ !$isItemPending ? 'line-through' : '' }}">
                                                 {{ $item->item_name }}
                                             </span>

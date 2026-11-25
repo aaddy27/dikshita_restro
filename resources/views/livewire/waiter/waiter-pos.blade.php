@@ -100,9 +100,23 @@
                         </div>
                     </div>
 
-                    <button wire:click="closeTable" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-lg font-bold">
-                        &times;
-                    </button>
+                    <div class="flex items-center gap-2">
+                        @if($selectedOrder && $selectedTable->status !== 'locked')
+                            <button
+                                wire:click="cancelOrder"
+                                wire:confirm="Kya aap Table {{ $selectedTable->table_number }} ka order cancel karna chahte hain? Yeh table vacant ho jayegi."
+                                class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 font-bold text-[11px] rounded-lg flex items-center gap-1 transition-colors"
+                                title="Cancel Order"
+                            >
+                                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                <span>Cancel Order</span>
+                            </button>
+                        @endif
+
+                        <button wire:click="closeTable" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-lg font-bold">
+                            &times;
+                        </button>
+                    </div>
                 </div>
 
                 <!-- If Table is Locked -->
@@ -275,29 +289,40 @@
                     @php
                         $pendingItemsCount = $selectedOrder->items->where('kot_status', 'pending')->count();
                     @endphp
-                    <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+                    <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-2 flex-wrap">
                         <div class="flex flex-col">
                             <span class="text-[10px] font-bold uppercase text-slate-500">Total Items</span>
                             <span class="text-sm font-black text-slate-900 font-mono-numbers">{{ $selectedOrder->items->sum('qty') }} items (₹{{ number_format($selectedOrder->subtotal, 2) }})</span>
                         </div>
 
-                        <!-- KOT Print Button -->
-                        @if($pendingItemsCount > 0)
+                        <div class="flex items-center gap-2">
                             <button
-                                wire:click="triggerKot"
-                                class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                                wire:click="cancelOrder"
+                                wire:confirm="Kya aap Table {{ $selectedTable->table_number }} ka order cancel karna chahte hain? Yeh table vacant ho jayegi."
+                                class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 font-bold text-xs rounded-xl flex items-center gap-1 transition-colors"
                             >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                                <span>Print KOT ({{ $pendingItemsCount }} Pending)</span>
+                                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                <span>Cancel Order</span>
                             </button>
-                        @else
-                            <button
-                                onclick="window.open('{{ route('order.kot', ['order' => $selectedOrder->id, 'all' => 1, 'autoprint' => 1]) }}', '_blank', 'width=450,height=650')"
-                                class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl"
-                            >
-                                Reprint Full KOT
-                            </button>
-                        @endif
+
+                            <!-- KOT Print Button -->
+                            @if($pendingItemsCount > 0)
+                                <button
+                                    wire:click="triggerKot"
+                                    class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                    <span>Print KOT ({{ $pendingItemsCount }} Pending)</span>
+                                </button>
+                            @else
+                                <button
+                                    onclick="window.open('{{ route('order.kot', ['order' => $selectedOrder->id, 'all' => 1, 'autoprint' => 1]) }}', '_blank', 'width=450,height=650')"
+                                    class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl"
+                                >
+                                    Reprint Full KOT
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 @endif
             </div>

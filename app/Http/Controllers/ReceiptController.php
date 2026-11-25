@@ -64,8 +64,9 @@ class ReceiptController extends Controller
 
         $restaurant = [
             'name' => config('app.restaurant_name', 'Dikshita Restro & Cafe'),
-            'address' => config('app.restaurant_address', 'Main Street, Tech Zone, Bengaluru, KA - 560100'),
-            'phone' => config('app.restaurant_phone', '+91 98765 43210'),
+            'address' => config('app.restaurant_address', 'Murlidhar Vyas Colony,
+Near Chura Gali, Bikaner 334001, Bkn-334001'),
+            'phone' => config('app.restaurant_phone', '+91 80944 26174'),
             'email' => config('app.restaurant_email', 'billing@dikshitarestro.com'),
             'gstin' => config('app.restaurant_gstin', '29AABCU9603R1ZM'),
             'fssai' => config('app.restaurant_fssai', '11223344556677'),

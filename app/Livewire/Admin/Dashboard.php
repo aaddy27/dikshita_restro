@@ -10,6 +10,44 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
+    public function cancelOrder(int $orderId)
+    {
+        $order = Order::with('table')->findOrFail($orderId);
+        if ($order->status === 'paid') {
+            session()->flash('error', 'Paid order cannot be cancelled.');
+            return;
+        }
+
+        $orderNumber = $order->order_number;
+        $table = $order->table;
+        $tableName = $table ? $table->table_number : 'Table';
+
+        $order->update([
+            'status' => 'cancelled',
+            'notes' => trim(($order->notes ? $order->notes . ' | ' : '') . 'Cancelled by Admin (' . (auth()->user()->name ?? 'Admin') . ')'),
+        ]);
+
+        $order->items()->update(['kot_status' => 'cancelled']);
+
+        if ($table) {
+            $table->update([
+                'status' => 'vacant',
+                'current_order_id' => null,
+            ]);
+        }
+
+        \App\Models\AuditLog::record(
+            $order->id,
+            'order_cancelled',
+            ['status' => 'open'],
+            ['status' => 'cancelled'],
+            "Order {$orderNumber} (Table {$tableName}) was cancelled by Admin (" . (auth()->user()->name ?? 'Admin') . ")",
+            auth()->id()
+        );
+
+        session()->flash('message', "Order {$orderNumber} cancelled successfully.");
+    }
+
     public function render()
     {
         $today = Carbon::today();

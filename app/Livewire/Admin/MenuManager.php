@@ -21,7 +21,7 @@ class MenuManager extends Component
     public string $description = '';
     public $image = null;
     public ?string $existingImagePath = null;
-    public string $type = 'veg'; // veg, non_veg
+    public string $type = 'veg'; // 100% Pure Vegetarian restaurant
     public float $base_price = 0.0;
     public float $gst_percentage = 5.0;
     public bool $is_discount_excluded = false;
